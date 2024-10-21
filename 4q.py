@@ -54,6 +54,33 @@ lib.checkSumIdentity.argtypes = [
 ]
 lib.checkSumIdentity.restype = ctypes.c_bool
 
+# void signWithNonceK(const unsigned char* k, const unsigned char* publicKey, const unsigned char* messageDigest, unsigned char* signature)
+lib.signWithNonceK.argtypes = [
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8)
+]
+lib.signWithNonceK.restype = None
+
+# void sign(const unsigned char* subseed, const unsigned char* publicKey, const unsigned char* messageDigest, unsigned char* signature) 
+lib.sign.argtypes = [
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8)
+]
+lib.sign.restype = None
+
+# bool verify(const unsigned char* publicKey, const unsigned char* messageDigest, const unsigned char* signature)
+lib.verify.argtypes = [
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.POINTER(ctypes.c_uint8)
+]
+lib.verify.restype = ctypes.c_bool
+
+
 # Python wrapper functions
 def getSubseedFromSeed(seed: bytes) -> bytes:
     if len(seed) != 55:
@@ -144,6 +171,28 @@ def getDigestFromSiblings32(
         output
     )
     return output
+
+def signWithNonceK(k: bytes, publicKey: bytes, messageDigest: bytes) -> bytes:
+    signature = (ctypes.c_uint8 * 64)()
+    k_array = (ctypes.c_uint8 * len(k)).from_buffer_copy(k)
+    publicKey_array = (ctypes.c_uint8 * len(publicKey)).from_buffer_copy(publicKey)
+    messageDigest_array = (ctypes.c_uint8 * len(messageDigest)).from_buffer_copy(messageDigest)
+    lib.signWithNonceK(k_array, publicKey_array, messageDigest_array, signature)
+    return signature
+
+def sign(subseed: bytes, publicKey: bytes, messageDigest: bytes) -> bytes:
+    signature = (ctypes.c_uint8 * 64)()
+    subseed_array = (ctypes.c_uint8 * len(subseed)).from_buffer_copy(subseed)
+    publicKey_array = (ctypes.c_uint8 * len(publicKey)).from_buffer_copy(publicKey)
+    messageDigest_array = (ctypes.c_uint8 * len(messageDigest)).from_buffer_copy(messageDigest)
+    lib.sign(subseed_array, publicKey_array, messageDigest_array, signature)
+    return signature
+
+def verify(publicKey: bytes, messageDigest: bytes, signature: bytes) -> bool:
+    publicKey_array = (ctypes.c_uint8 * len(publicKey)).from_buffer_copy(publicKey)
+    messageDigest_array = (ctypes.c_uint8 * len(messageDigest)).from_buffer_copy(messageDigest)
+    signature_array = (ctypes.c_uint8 * len(signature)).from_buffer_copy(signature)
+    return bool(lib.verify(publicKey_array, messageDigest_array, signature_array))
 
 # Example usage
 
