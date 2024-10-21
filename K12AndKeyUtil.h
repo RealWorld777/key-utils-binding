@@ -567,11 +567,11 @@ typedef struct
     f2elm_t y;
 } point_affine;
 typedef point_affine point_t[1];
-#define VOID_FUNC_DECL static void
-#define BOOL_FUNC_DECL static bool
+#define VOID_FUNC_DECL extern "C" void __declspec(dllexport)
+#define BOOL_FUNC_DECL extern "C" bool __declspec(dllexport)
 #else
-#define VOID_FUNC_DECL void
-#define BOOL_FUNC_DECL bool
+#define VOID_FUNC_DECL extern "C" void __declspec(dllexport)
+#define BOOL_FUNC_DECL extern "C" bool __declspec(dllexport)
 #endif
 
 typedef struct
