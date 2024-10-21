@@ -420,7 +420,7 @@ static void KangarooTwelve_F_Absorb(KangarooTwelve_F *instance, const uint8_t *d
         }
     }
 }
-static void KangarooTwelve(const uint8_t *input, unsigned int inputByteLen, uint8_t *output, unsigned int outputByteLen) {
+extern "C" void __declspec(dllexport) KangarooTwelve(const uint8_t *input, unsigned int inputByteLen, uint8_t *output, unsigned int outputByteLen) {
     KangarooTwelve_F queueNode;
     KangarooTwelve_F finalNode;
     unsigned int blockNumber, queueAbsorbedLen;

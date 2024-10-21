@@ -80,6 +80,14 @@ lib.verify.argtypes = [
 ]
 lib.verify.restype = ctypes.c_bool
 
+# void KangarooTwelve(const uint8_t *input, unsigned int inputByteLen, uint8_t *output, unsigned int outputByteLen)
+lib.KangarooTwelve.argtypes = [
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.c_uint,
+    ctypes.POINTER(ctypes.c_uint8),
+    ctypes.c_uint
+]
+lib.KangarooTwelve.restype = None
 
 # Python wrapper functions
 def get_subseed_from_seed(seed: bytes) -> bytes:
@@ -229,6 +237,23 @@ def check_sum_identity(identity: str) -> bool:
         raise ValueError("Identity must be exactly 60 characters long.")
     identity_bytes = identity.encode('utf-8')
     return bool(lib.checkSumIdentity(identity_bytes))
+
+def kangaroo_twelve(input: bytes, input_byte_len: int, output_byte_len: int) -> bytes:
+    """
+    Generates a KangarooTwelve hash from the provided input.
+
+    Args:
+        input (bytes): The input bytes for which the KangarooTwelve hash is to be computed.
+        input_byte_len (int): The length of the input bytes.
+        output_byte_len (int): The length of the output bytes.
+
+    Returns:
+        bytes: A bytes object representing the KangarooTwelve hash.
+    """
+    output = (ctypes.c_uint8 * output_byte_len)()
+    input_array = (ctypes.c_uint8 * len(input)).from_buffer_copy(input)
+    lib.KangarooTwelve(input_array, input_byte_len, output, output_byte_len)
+    return output
 
 def get_digest_from_siblings32(
     depth: int,
