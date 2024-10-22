@@ -253,7 +253,7 @@ def kangaroo_twelve(input: bytes, input_byte_len: int, output_byte_len: int) -> 
     output = (ctypes.c_uint8 * output_byte_len)()
     input_array = (ctypes.c_uint8 * len(input)).from_buffer_copy(input)
     lib.KangarooTwelve(input_array, input_byte_len, output, output_byte_len)
-    return output
+    return bytes(output)
 
 def get_digest_from_siblings32(
     depth: int,
