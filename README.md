@@ -54,6 +54,19 @@ g++ -shared -fPIC -o KeyUtils.so KeyUtils.cpp
 nm -D libKeyUtils.so 
 ```
 
+## For macOS
+
+1. Build
+
+```sh
+clang++ -shared -o libKeyUtils.dylib KeyUtils.cpp
+```
+
+2. Check Lib functions
+
+nm -g libKeyUtils.dylib
+
+
 # For more information
 
 - [Qubic KeyUtils](https://github.com/qubic/qubic-cli/blob/main/K12AndKeyUtil.h)
