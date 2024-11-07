@@ -420,7 +420,58 @@ static void KangarooTwelve_F_Absorb(KangarooTwelve_F *instance, const uint8_t *d
         }
     }
 }
-extern "C" void __declspec(dllexport) KangarooTwelve(const uint8_t *input, unsigned int inputByteLen, uint8_t *output, unsigned int outputByteLen) {
+
+#define CURVE_ORDER_0 0x2FB2540EC7768CE7
+#define CURVE_ORDER_1 0xDFBD004DFE0F7999
+#define CURVE_ORDER_2 0xF05397829CBC14E5
+#define CURVE_ORDER_3 0x0029CBC14E5E0A72
+#define MONTGOMERY_SMALL_R_PRIME_0 0xE12FE5F079BC3929
+#define MONTGOMERY_SMALL_R_PRIME_1 0xD75E78B8D1FCDCF3
+#define MONTGOMERY_SMALL_R_PRIME_2 0xBCE409ED76B5DB21
+#define MONTGOMERY_SMALL_R_PRIME_3 0xF32702FDAFC1C074
+
+#define B11 0xF6F900D81F5F5E6A
+#define B12 0x1363E862C22A2DA0
+#define B13 0xF8BD9FCE1337FCF1
+#define B14 0x084F739986B9E651
+#define B21 0xE2B6A4157B033D2C
+#define B22 0x0000000000000001
+#define B23 0xFFFFFFFFFFFFFFFF
+#define B24 0xDA243A43722E9830
+#define B31 0xE85452E2DCE0FCFE
+#define B32 0xFD3BDEE51C7725AF
+#define B33 0x2E4D21C98927C49F
+#define B34 0xF56190BB3FD13269
+#define B41 0xEC91CBF56EF737C1
+#define B42 0xCEDD20D23C1F00CE
+#define B43 0x068A49F02AA8A9B5
+#define B44 0x18D5087896DE0AEA
+#define C1 0x72482C5251A4559C
+#define C2 0x59F95B0ADD276F6C
+#define C3 0x7DD2D17C4625FA78
+#define C4 0x6BC57DEF56CE8877
+#ifndef BUILD_4Q_LIB
+
+typedef unsigned long long felm_t[2]; // Datatype for representing 128-bit field elements
+typedef felm_t f2elm_t[2]; // Datatype for representing quadratic extension field elements
+typedef struct
+{ // Point representation in affine coordinates
+    f2elm_t x;
+    f2elm_t y;
+} point_affine;
+typedef point_affine point_t[1];
+
+#ifdef _WIN32
+    #define VOID_FUNC_DECL extern "C" void __declspec(dllexport)
+    #define BOOL_FUNC_DECL extern "C" bool __declspec(dllexport)
+#else
+    #define VOID_FUNC_DECL extern "C" void __attribute__((visibility("default")))
+    #define BOOL_FUNC_DECL extern "C" bool __attribute__((visibility("default")))
+#endif
+
+#endif
+
+VOID_FUNC_DECL KangarooTwelve(const uint8_t *input, unsigned int inputByteLen, uint8_t *output, unsigned int outputByteLen) {
     KangarooTwelve_F queueNode;
     KangarooTwelve_F finalNode;
     unsigned int blockNumber, queueAbsorbedLen;
@@ -528,51 +579,6 @@ extern "C" void __declspec(dllexport) KangarooTwelve(const uint8_t *input, unsig
     KeccakP1600_Permute_12rounds(finalNode.state);
     memcpy(output, finalNode.state, outputByteLen);
 }
-#define CURVE_ORDER_0 0x2FB2540EC7768CE7
-#define CURVE_ORDER_1 0xDFBD004DFE0F7999
-#define CURVE_ORDER_2 0xF05397829CBC14E5
-#define CURVE_ORDER_3 0x0029CBC14E5E0A72
-#define MONTGOMERY_SMALL_R_PRIME_0 0xE12FE5F079BC3929
-#define MONTGOMERY_SMALL_R_PRIME_1 0xD75E78B8D1FCDCF3
-#define MONTGOMERY_SMALL_R_PRIME_2 0xBCE409ED76B5DB21
-#define MONTGOMERY_SMALL_R_PRIME_3 0xF32702FDAFC1C074
-
-#define B11 0xF6F900D81F5F5E6A
-#define B12 0x1363E862C22A2DA0
-#define B13 0xF8BD9FCE1337FCF1
-#define B14 0x084F739986B9E651
-#define B21 0xE2B6A4157B033D2C
-#define B22 0x0000000000000001
-#define B23 0xFFFFFFFFFFFFFFFF
-#define B24 0xDA243A43722E9830
-#define B31 0xE85452E2DCE0FCFE
-#define B32 0xFD3BDEE51C7725AF
-#define B33 0x2E4D21C98927C49F
-#define B34 0xF56190BB3FD13269
-#define B41 0xEC91CBF56EF737C1
-#define B42 0xCEDD20D23C1F00CE
-#define B43 0x068A49F02AA8A9B5
-#define B44 0x18D5087896DE0AEA
-#define C1 0x72482C5251A4559C
-#define C2 0x59F95B0ADD276F6C
-#define C3 0x7DD2D17C4625FA78
-#define C4 0x6BC57DEF56CE8877
-#ifndef BUILD_4Q_LIB
-
-typedef unsigned long long felm_t[2]; // Datatype for representing 128-bit field elements
-typedef felm_t f2elm_t[2]; // Datatype for representing quadratic extension field elements
-typedef struct
-{ // Point representation in affine coordinates
-    f2elm_t x;
-    f2elm_t y;
-} point_affine;
-typedef point_affine point_t[1];
-#define VOID_FUNC_DECL extern "C" void __declspec(dllexport)
-#define BOOL_FUNC_DECL extern "C" bool __declspec(dllexport)
-#else
-#define VOID_FUNC_DECL extern "C" void __declspec(dllexport)
-#define BOOL_FUNC_DECL extern "C" bool __declspec(dllexport)
-#endif
 
 typedef struct
 { // Point representation in extended coordinates

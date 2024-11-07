@@ -34,6 +34,26 @@ cl /LD /EHsc /I. /FeKeyUtils.dll KeyUtils.cpp
 dumpbin -exports KeyUtils.dll
 ```
 
+
+## For Linux
+
+1. Install build essentials
+```sh
+sudo apt install build-essential
+```
+
+2. Build the DLL
+
+```sh
+g++ -shared -fPIC -o KeyUtils.so KeyUtils.cpp
+```
+
+3. Check DLL functions
+
+```sh
+nm -D libKeyUtils.so 
+```
+
 # For more information
 
 - [Qubic KeyUtils](https://github.com/qubic/qubic-cli/blob/main/K12AndKeyUtil.h)

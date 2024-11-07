@@ -1,11 +1,19 @@
 #include <cstdint>
 #include <vector>
-#include "keyUtils.h"
+#include "KeyUtils.h"
 #include "K12AndKeyUtil.h"
 #include "logger.h"
 #include <stdint.h>
 
-extern "C" bool __declspec(dllexport) getSubseedFromSeed(const uint8_t* seed, uint8_t* subseed)
+#ifdef _WIN32
+    #define VOID_FUNC_DECL extern "C" void __declspec(dllexport)
+    #define BOOL_FUNC_DECL extern "C" bool __declspec(dllexport)
+#else
+    #define VOID_FUNC_DECL extern "C" void __attribute__((visibility("default")))
+    #define BOOL_FUNC_DECL extern "C" bool __attribute__((visibility("default")))
+#endif
+
+BOOL_FUNC_DECL getSubseedFromSeed(const uint8_t* seed, uint8_t* subseed)
 {
     uint8_t seedBytes[55];
     for (int i = 0; i < 55; i++)
@@ -20,18 +28,18 @@ extern "C" bool __declspec(dllexport) getSubseedFromSeed(const uint8_t* seed, ui
 
     return true;
 }
-extern "C" void __declspec(dllexport) getPrivateKeyFromSubSeed(const uint8_t* seed, uint8_t* privateKey)
+VOID_FUNC_DECL getPrivateKeyFromSubSeed(const uint8_t* seed, uint8_t* privateKey)
 {
     KangarooTwelve(seed, 32, privateKey, 32);
 }
-extern "C" void __declspec(dllexport) getPublicKeyFromPrivateKey(const uint8_t* privateKey, uint8_t* publicKey)
+VOID_FUNC_DECL getPublicKeyFromPrivateKey(const uint8_t* privateKey, uint8_t* publicKey)
 {
     point_t P;
     ecc_mul_fixed((unsigned long long*)privateKey, P); // Compute public key
     encode(P, publicKey);
 }
 
-extern "C" void __declspec(dllexport) getIdentityFromPublicKey(const uint8_t* pubkey, char* dstIdentity, bool isLowerCase)
+VOID_FUNC_DECL getIdentityFromPublicKey(const uint8_t* pubkey, char* dstIdentity, bool isLowerCase)
 {
     uint8_t publicKey[32] ;
     memcpy(publicKey, pubkey, 32);
@@ -56,13 +64,13 @@ extern "C" void __declspec(dllexport) getIdentityFromPublicKey(const uint8_t* pu
     identity[60] = 0;
     for (int i = 0; i < 60; i++) dstIdentity[i] = identity[i];
 }
-extern "C" void __declspec(dllexport) getTxHashFromDigest(const uint8_t* digest, char* txHash)
+VOID_FUNC_DECL getTxHashFromDigest(const uint8_t* digest, char* txHash)
 {
     bool isLowerCase = true;
     getIdentityFromPublicKey(digest, txHash, isLowerCase);
 }
 
-extern "C" void __declspec(dllexport) getPublicKeyFromIdentity(const char* identity, uint8_t* publicKey)
+VOID_FUNC_DECL getPublicKeyFromIdentity(const char* identity, uint8_t* publicKey)
 {
     unsigned char publicKeyBuffer[32];
     for (int i = 0; i < 4; i++)
@@ -81,7 +89,7 @@ extern "C" void __declspec(dllexport) getPublicKeyFromIdentity(const char* ident
     memcpy(publicKey, publicKeyBuffer, 32);
 }
 
-extern "C" bool __declspec(dllexport) checkSumIdentity(char* identity)
+BOOL_FUNC_DECL checkSumIdentity(char* identity)
 {
     unsigned char publicKeyBuffer[32];
     for (int i = 0; i < 4; i++)
