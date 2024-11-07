@@ -16,8 +16,9 @@ This repository contains the code for the KeyUtils library, which is a Python wr
 - `sign`
 - `verify`
 
-
 # How to build
+
+## For Windows
 
 1. Install Python 3.10 or later
 2. Install Visual Studio 2022 Community Edition
@@ -34,10 +35,10 @@ cl /LD /EHsc /I. /FeKeyUtils.dll KeyUtils.cpp
 dumpbin -exports KeyUtils.dll
 ```
 
-
 ## For Linux
 
 1. Install build essentials
+
 ```sh
 sudo apt install build-essential
 ```
@@ -51,7 +52,7 @@ g++ -shared -fPIC -o KeyUtils.so KeyUtils.cpp
 3. Check DLL functions
 
 ```sh
-nm -D libKeyUtils.so 
+nm -D libKeyUtils.so
 ```
 
 ## For macOS
@@ -64,8 +65,9 @@ clang++ -shared -o libKeyUtils.dylib KeyUtils.cpp
 
 2. Check Lib functions
 
+```sh
 nm -g libKeyUtils.dylib
-
+```
 
 # For more information
 
