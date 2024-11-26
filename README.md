@@ -2,19 +2,24 @@
 
 This repository contains the code for the KeyUtils library, which is a Python wrapper for the Qubic KeyUtils C++ library.
 
+# Motivation
+
+The Qubic KeyUtils library is a C++ library that provides functions for generating keys and signatures for the Qubic blockchain. It is using fourq for hash algorithm, but unfortunatly it is not implemented in Python. So for the purpose of using Qubic in Python, I implemented binding for the KeyUtils library in Python.
+
 # Implemented Functions
 
-- `getSubseedFromSeed`
-- `getPrivateKeyFromSubSeed`
-- `getPublicKeyFromPrivateKey`
-- `getIdentityFromPublicKey`
-- `getDigestFromSiblings32`
-- `getTxHashFromDigest`
-- `getPublicKeyFromIdentity`
-- `checkSumIdentity`
-- `signWithNonceK`
+- `get_subseed_from_seed`
+- `get_private_key_from_subseed`
+- `get_public_key_from_private_key`
+- `get_identity_from_public_key`
+- `get_digest_from_siblings32`
+- `get_tx_hash_from_digest`
+- `get_public_key_from_identity`
+- `check_sum_identity`
+- `sign_with_nonce_k`
 - `sign`
 - `verify`
+- `kangaroo_twelve`
 
 # How to build
 
@@ -72,4 +77,4 @@ nm -g libKeyUtils.dylib
 # For more information
 
 - [Qubic KeyUtils](https://github.com/qubic/qubic-cli/blob/main/K12AndKeyUtil.h)
-- [QubiPy Crypto Utils (Pull Request)](https://github.com/QubiPy-Labs/QubiPy/pull/3)
+- [QubiPy Repository](https://github.com/QubiPy-Labs/QubiPy)
